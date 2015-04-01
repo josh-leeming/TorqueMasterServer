@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using CommandLine.Text;
 
 namespace MasterServer.Console
 {
@@ -8,5 +9,12 @@ namespace MasterServer.Console
         public int Port { get; set; }
         [Option("ip", Required = false, DefaultValue = Settings.IPAddress, HelpText = "Usage --ip 127.0.0.1")]
         public string IPAddress { get; set; }
+
+        [HelpOption]
+        public string GetUsage()
+        {
+            return HelpText.AutoBuild(this,
+              (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+        }
     }
 }

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\UdpMessageExtensions.cs" />
     <Compile Include="InMemorySessionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceModel\Messages\GameHeartbeat.cs" />
@@ -53,7 +54,6 @@
     <Compile Include="TorqueMasterServer.cs" />
     <Compile Include="TorqueMessageFactory.cs" />
     <Compile Include="TorqueMessageRouter.cs" />
-    <Compile Include="UdpMessageExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MasterServer.Core\MasterServer.Core.csproj">

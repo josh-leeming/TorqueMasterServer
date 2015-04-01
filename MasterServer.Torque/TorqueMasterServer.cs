@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using MasterServer.ServiceInterface;
 using MasterServer.ServiceModel;
+using MasterServer.Torque.Extensions;
 using MasterServer.Torque.ServiceModel;
 using MasterServer.Torque.ServiceModel.Messages;
 using TinyIoC;

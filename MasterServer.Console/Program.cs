@@ -4,6 +4,7 @@ using System.Net;
 using MasterServer.ServiceInterface;
 using MasterServer.Torque;
 using TinyIoC;
+using CommandLine;
 
 namespace MasterServer.Console
 {
@@ -13,17 +14,32 @@ namespace MasterServer.Console
         {
             var container = TinyIoCContainer.Current;
 
-            TorqueMasterServerIoC.ConfigureContainer(container);
+            var options = new Options();
+            try
+            {
+                if (Parser.Default.ParseArguments(args, options))
+                {
+                    container.Register(options);
 
-            var masterServer = container.Resolve<TorqueMasterServer>();
-            container.BuildUp(masterServer);
+                    TorqueMasterServerIoC.ConfigureContainer(container); 
 
-            masterServer.StartMasterServer();
+                    var masterServer = container.Resolve<TorqueMasterServer>();
+                    container.BuildUp(masterServer);
 
-            System.Console.ReadLine();
+                    masterServer.StartMasterServer();
 
-            masterServer.StopMasterServer();
+                    System.Console.ReadLine();
 
+                    masterServer.StopMasterServer();
+
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+            System.Console.WriteLine("\nPress any key to exit...");
             System.Console.ReadLine();
         }
     }
@@ -32,6 +48,8 @@ namespace MasterServer.Console
     {
         public static void ConfigureContainer(TinyIoCContainer container)
         {
+            var opts = container.Resolve<Options>();
+
             container.Register(typeof(ILogHandler), typeof(Logger.Log4NetLogger)).AsSingleton();
             container.Register<InMemorySessionManager>().AsSingleton();
 
@@ -44,9 +62,15 @@ namespace MasterServer.Console
                 typeof (SpamManager)
             }).AsSingleton();
 
+            IPAddress ipAddress;
+
+            if (IPAddress.TryParse(opts.IPAddress, out ipAddress) == false)
+            {
+                throw new ArgumentException("Failed to parse IP Address: " + opts.IPAddress);
+            }
 
             container.Register(typeof(TorqueMasterServer),
-                new TorqueMasterServer(container, new IPEndPoint(IPAddress.Any, 28002))); 
+                new TorqueMasterServer(container, new IPEndPoint(ipAddress, opts.Port))); 
         }
     }
 }
